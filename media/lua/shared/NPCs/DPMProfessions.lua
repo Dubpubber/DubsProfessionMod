@@ -10,7 +10,7 @@ require "MainCreationMethods"
 -- Resource: MainCreationMethods.lua
 DPMProfessions = {};
 DPMProfessions.DoTraits = function()
-    -- Add our dummy, unremovable, traits.
+    -- Add our dummy, unremovable, traits. [Already in game!!!]
     TraitFactory.addTrait("dpm_KeenHearing", getText("UI_trait_keenhearing"), 0, getText("UI_trait_keenhearingdesc"), true);
     TraitFactory.addTrait("dpm_Cowardly", getText("UI_trait_cowardly"), 0, getText("UI_trait_cowardlydesc"), true);
     TraitFactory.addTrait("dpm_EagleEyed", getText("UI_trait_eagleeyed"), 0, getText("UI_trait_eagleeyeddesc"), true);
@@ -23,6 +23,9 @@ DPMProfessions.DoTraits = function()
     TraitFactory.addTrait("dpm_Outdoorsman", getText("UI_trait_outdoorsman"), 0, getText("UI_trait_outdoorsmandesc"), true);
     TraitFactory.addTrait("dpm_FastReader", getText("UI_trait_FastReader"), 0, getText("UI_trait_FastReaderDesc"), true);
     TraitFactory.addTrait("dpm_Organized", getText("UI_trait_Packmule"), 0, getText("UI_trait_PackmuleDesc"), true);
+    TraitFactory.addTrait("dpm_Pacifist", getText("UI_trait_Pacifist"), 0, getText("UI_trait_PacifistDesc"), true);
+    TraitFactory.addTrait("dpm_Brave", getText("UI_trait_brave"), 0, getText("UI_trait_bravedesc"), true);
+    -- Add our custom traits. [Not in game!]
 end
 DPMProfessions.DoProfessions = function()
     -- This is where DMP actually adds the new professions.
@@ -95,7 +98,7 @@ DPMProfessions.DoProfessions = function()
         "dmp_soldier",
         "Soldier",
         "profession_veteran2",
-        -10,
+        -14,
         "Gone AWOL."
     );
     soldier:addXPBoost(Perks.Doctor, 1);
@@ -208,17 +211,52 @@ DPMProfessions.DoProfessions = function()
     paparazzi:addFreeTrait("dpm_Cowardly");
     paparazzi:addXPBoost(Perks.Sneak, 3);
     paparazzi:addXPBoost(Perks.Lightfoot, 2);
-    local professionathlete = ProfessionFactory.addProfession(
+    local professionalathlete = ProfessionFactory.addProfession(
         "dmp_professionalathlete",
         "Professional Athlete",
         "profession_athlete",
         -12,
         "You've spent your entire life training for this."
     );
-    professionathlete:addFreeTrait("dpm_Outdoorsman");
-    professionathlete:addXPBoost(Perks.Sprinting, 4);
-    professionathlete:addXPBoost(Perks.Strength, 4);
-    professionathlete:addXPBoost(Perks.Fitness, 4);
+    professionalathlete:addFreeTrait("dpm_Outdoorsman");
+    professionalathlete:addXPBoost(Perks.Sprinting, 4);
+    professionalathlete:addXPBoost(Perks.Strength, 4);
+    professionalathlete:addXPBoost(Perks.Fitness, 4);
+    local priest = ProfessionFactory.addProfession(
+        "dmp_priest",
+        "Priest",
+        "profession_global",
+        6,
+        "Only God can save these people."
+    );
+    priest:addFreeTrait("dpm_Pacifist");
+    local prisonguard = ProfessionFactory.addProfession(
+        "dmp_prisonguard",
+        "Prison Guard",
+        "profession_global",
+        -2,
+        "Nothig in the big house could've possibly prepared you for this."
+    );
+    prisonguard:addFreeTrait("dpm_Brave");
+    prisonguard:addXPBoost(Perks.Strength, 2);
+    prisonguard:addXPBoost(Perks.Fitness, 1);
+    local entrepreneur = ProfessionFactory.addProfession(
+        "dmp_entrepreneur",
+        "Entrepreneur",
+        "profession_global",
+        -4,
+        "You once served this population, guess you'll have to put that aside for now."
+    );
+    -- Update the descriptions for the professions. (This includes the new ones!!)
+    local profList = ProfessionFactory.getProfessions()
+    for i = 1, profList:size() do
+        local profession = profList:get(i - 1);
+        BaseGameCharacterDetails.SetProfessionDescription(profession);
+        print("Loaded Profesion: " .. profession:getName());
+    end
+    offshoreworker:setDescription(offshoreworker:getDescription() .. "\nCan operate generators.");
+    entrepreneur:setDescription("If picked, your inventory and XP boosts will be almost entirely random!");
+    print("Loaded " .. profList:size() .. " professions!");
 end
 
 Events.OnGameBoot.Add(DPMProfessions.DoTraits);
